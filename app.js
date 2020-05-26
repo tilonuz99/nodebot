@@ -3,12 +3,12 @@ let adversite		=		require("./adversite");
 let moreMoney		=		require("./moreMoney");
 
 const mongo			=		require("mongoose");
-mongo.connect("mongodb://bot:bot123@ds147079.mlab.com:47079/turbogram");
+mongo.connect("mongodb://c21538_nodeuz_na4u_ru:oyatillo99@mongo1.c21538.h2,mongo2.c21538.h2,mongo3.c21538.h2/c21538_nodeuz_na4u_ru?replicaSet=MongoReplica");
 
-const QIWI			=		require("node-qiwi-api").Qiwi;
+const QIWI			=		require("node-qiwi-api").asyncApi;
 const wallet		=		new QIWI("46ff0c25906184e43a2681d3c0038298");
 
-const admins		=		[482579901, 319797568, 657884680, 295523254];
+const admins		=		[818292197, 630751054];
 
 const User			=		mongo.model("User", new mongo.Schema({
 	id: Number,
@@ -61,7 +61,7 @@ const Ban			=		mongo.model("Ban", new mongo.Schema({
 
 const Telegram		=		require("node-telegram-bot-api");
 const bot			=		new Telegram(
-	"1214475671:AAE4mA9NpqMU7DR3dzUSMva3z_z-OVDwiAQ",
+	"1035357676:AAE7cN7_XDlIyC4I2kw7ZkUewE4Ob2ILGDE",
 	{ polling: true }
 );
 
@@ -74,9 +74,9 @@ setInterval(async () => {
 			if(transactions.indexOf(operation.txnId) !== -1) return;
 
 			if(!operation.comment) return;
-			if(!operation.comment.startsWith("newprofit")) return;
+			if(!operation.comment.startsWith("prosom")) return;
 
-			let user = await User.findOne({ id: Number(operation.comment.split("newprofit")[1]) });
+			let user = await User.findOne({ id: Number(operation.comment.split("prosom")[1]) });
 			if(!user) return;
 
 			await user.inc("balance", operation.sum.amount);
@@ -105,10 +105,10 @@ const messages		=		{
 📃 Выполняйте задание и зарабатывайте деньги.
 
 <b>📮 Важно</b>: Запрещено отписываться от канала в течении 7 дней.`,
-	sub_request: `➄1�7 Подпишитесь на канал и перейдите в бота чтобы проверить задание.\n\n📌 <b>Важно</b>: Не выходите из канала в течении 7 дней.`,
+	sub_request: `➕ Подпишитесь на канал и перейдите в бота чтобы проверить задание.\n\n📌 <b>Важно</b>: Не выходите из канала в течении 7 дней.`,
 	sub_no: `Пока нет новых каналов.`,
 	sub_err: `Вы всё ещё не подписаны!`,
-	sub_end: `Спасибо за подписку. Вы получили ${settings.pps}₄1�7 👍`,
+	sub_end: `Спасибо за подписку. Вы получили ${settings.pps}₽ 👍`,
 	view_request: `👁 Просмотрите пост, ожидайте начисления 💸`,
 	view_end: `💰 На Ваш баланс начислено ${settings.ppv}₽`,
 	view_no: `Пока нет новых постов.`,
@@ -138,11 +138,11 @@ const keyboards		=		{
 		["📧 Чат", "📤 Выплаты"]
 	],
 	earn: [
-		["➄1�7 Подписаться", "👁‍🗄1�7 Посмотреть"],
+		["➕ Подписаться", "👁‍🗨 Посмотреть"],
 		["⛔️ Отмена"]
 	],
 	pr: [
-		["➄1�7 Подписчики", "👁‍🗄1�7 Просмотры"],
+		["➕ Подписчики", "👁‍🗨 Просмотры"],
 		["📧 Рассылка"],
 		["🔖 Мои заказы", "🔙 Начало"]
 	],
@@ -187,7 +187,7 @@ bot.on("message", async (message) => {
 
 		if(Number(message.text.split("/start ")[1])) {
 			schema.ref		=		Number(message.text.split("/start ")[1]);
-			bot.sendMessage(Number(message.text.split("/start ")[1]), `📚 Вы получили <b>${settings.ppr}₄1�7</b> за приглашение <a href="tg://user?id=${message.from.id}">пользователя</a>`, {
+			bot.sendMessage(Number(message.text.split("/start ")[1]), `📚 Вы получили <b>${settings.ppr}₽</b> за приглашение <a href="tg://user?id=${message.from.id}">пользователя</a>`, {
 				parse_mode: "HTML"
 			});
 
@@ -246,8 +246,8 @@ bot.on("message", async (message) => {
 				reply_markup: {
 					inline_keyboard: [
 						[
-							{ text: "✄1�7 Выполнено", callback_data: `sponsorGive${message.from.id}` },
-							{ text: "❄1�7 Не выполнено", callback_data: `sponsorDeny${message.from.id}` }
+							{ text: "✅ Выполнено", callback_data: `sponsorGive${message.from.id}` },
+							{ text: "❌ Не выполнено", callback_data: `sponsorDeny${message.from.id}` }
 						]
 					]
 				}
@@ -284,7 +284,7 @@ bot.on("message", async (message) => {
 
 				return message.send(`Заявка на вывод успешно создана!
 
-✄1�7 Максимальное время выплаты: 48 часов.
+✅ Максимальное время выплаты: 48 часов.
 📌 P.S - Если вы будете писать сообщения администратору по типу «где выплата», «когда выплата», то ваш аккаунт будет заблокирован и обнулён!`, {
 					reply_markup: {
 						keyboard: keyboards.main,
@@ -398,7 +398,7 @@ bot.on("message", async (message) => {
 		});
 	}
 
-	if(message.text === "➄1�7 Подписаться") {
+	if(message.text === "➕ Подписаться") {
 		let channels		=		await Channel.find();
 			channels		=		channels.filter((x) => !x.completed.find((x) => x.id === message.from.id));
 
@@ -409,7 +409,7 @@ bot.on("message", async (message) => {
 			parse_mode: "HTML",
 			reply_markup: {
 				inline_keyboard: [
-					[{ text: `➄1�7 Перейти к выполнению`, url: `https://t.me/${channel.username}` }],
+					[{ text: `➕ Перейти к выполнению`, url: `https://t.me/${channel.username}` }],
 					[{ text: `✔️ Проверить подписку`, callback_data: `subcheck-${channel.username}` }],
 					[{ text: "✖️ Пропустить", callback_data: `skipChannel-${channel.username}` }]
 				]
@@ -417,7 +417,7 @@ bot.on("message", async (message) => {
 		});
 	}
 
-	if(message.text === "👁‍🗄1�7 Посмотреть") {
+	if(message.text === "👁‍🗨 Посмотреть") {
 		let posts = await Post.find();
 			posts = posts.filter((x) => x.completed.indexOf(message.from.id) === -1);
 
@@ -461,7 +461,7 @@ bot.on("message", async (message) => {
 		});
 	}
 
-	if(message.text === "➄1�7 Подписчики") {
+	if(message.text === "➕ Подписчики") {
 		await message.user.set("menu", "forwardsub");
 		return message.send(messages.pr.sub, {
 			parse_mode: "HTML",
@@ -472,7 +472,7 @@ bot.on("message", async (message) => {
 		});
 	}
 
-	if(message.text === "👁‍🗄1�7 Просмотры") {
+	if(message.text === "👁‍🗨 Просмотры") {
 		await message.user.set("menu", "forwardpost");
 		return message.send(messages.pr.view, {
 			parse_mode: "HTML",
@@ -489,12 +489,12 @@ bot.on("message", async (message) => {
 
 		return message.send(`💫 Вам нужна реклама от которой есть действительно отдача? Тогда заказывайте рассылку ✉️ на пользователей нашего 🤖 бота. 
 
-25%  (${Math.floor(users * 0.25)})  1�7 <b>${( cost * 0.25 ).toFixed(2)}</b>₄1�7
-50%  (${Math.floor(users * 0.50)})  1�7 <b>${( cost * 0.50 ).toFixed(2)}</b>₄1�7
-75%  (${Math.floor(users * 0.75)})  1�7 <b>${( cost * 0.75 ).toFixed(2)}</b>₄1�7
-100% (${Math.floor(users)})  1�7 <b>${( cost ).toFixed(2)}</b>₄1�7
+25%  (${Math.floor(users * 0.25)}) — <b>${( cost * 0.25 ).toFixed(2)}</b>₽
+50%  (${Math.floor(users * 0.50)}) — <b>${( cost * 0.50 ).toFixed(2)}</b>₽
+75%  (${Math.floor(users * 0.75)}) — <b>${( cost * 0.75 ).toFixed(2)}</b>₽
+100% (${Math.floor(users)}) — <b>${( cost ).toFixed(2)}</b>₽
 
-📲 Заказать рассылку: @Rosa_Admiralov`, {
+📲 Заказать рассылку: @TILON`, {
 			parse_mode: "HTML"
 		});
 	}
@@ -507,7 +507,7 @@ bot.on("message", async (message) => {
 
 		channels.map((x) => {
 			text		+=		`📢 Канал: @${x.username}
-✄1�7 Выполнено: ${x.completed.length}/${x.count}\n\n`;
+✅ Выполнено: ${x.completed.length}/${x.count}\n\n`;
 		});
 
 		return message.send(`Ваши заказы:
@@ -517,9 +517,9 @@ ${text}`);
 
 	if(message.text === "💳 Баланс") {
 		return message.send(`💳 Баланс
-💵 Ваш баланс: ${message.user.balance.toFixed(2)}₄1�7
+💵 Ваш баланс: ${message.user.balance.toFixed(2)}₽
 
-🔺 Статус аккаунта: ${message.user.verify ? `✄1�7 Верифицирован` : `❄1�7 Не верифицирован`}
+🔺 Статус аккаунта: ${message.user.verify ? `✅ Верифицирован` : `❌ Не верифицирован`}
 
 Для того, чтобы получить верификацию вы должны пополнить баланс на любую сумму (можно даже 1 рубль)`, {
 			reply_markup: {
@@ -530,8 +530,8 @@ ${text}`);
 	}
 
 	if(message.text === "📥 Пополнить") {
-		return message.send(`👛 Кошелёк QIWI: <code>+998977438393</code>
-📝 Комментарий к платежу: <code>newprofit${message.from.id}</code>
+		return message.send(`👛 Кошелёк QIWI: <code>+998995322553</code>
+📝 Комментарий к платежу: <code>prosom${message.from.id}</code>
 
 Деньги будут выданы в течении минуты.`, {
 			parse_mode: "HTML",
@@ -586,15 +586,15 @@ ${text}`);
 
 		return message.send(`Приглашайте друзей, по ссылке и получайте деньги на счет, разместите ссылку в вашем канале или чате.
 		
-⭐️ За приглашение друга по ссылке: <b>${settings.ppr}₄1�7</b>
+⭐️ За приглашение друга по ссылке: <b>${settings.ppr}₽</b>
 
-1️⃣ уровень  1�7 <b>${lvl1.length}</b>
-2️⃣ уровень  1�7 <b>${lvl2.length}</b>
+1️⃣ уровень — <b>${lvl1.length}</b>
+2️⃣ уровень — <b>${lvl2.length}</b>
 
-1️⃣ уровень  1�7 <b>20%</b> дохода
-2️⃣ уровень  1�7 <b>10%</b> дохода
+1️⃣ уровень — <b>20%</b> дохода
+2️⃣ уровень — <b>10%</b> дохода
 
-🔗 Ваша ссылка: https://t.me/NewProfitBot?start=${message.from.id}`, {
+🔗 Ваша ссылка: https://t.me/ProSomBot?start=${message.from.id}`, {
 			parse_mode: "HTML"
 		});
 	}
@@ -626,8 +626,8 @@ ${text}`);
 	}
 
 	if(message.text === "📤 Выплаты" || message.text === "📧 Чат") {
-		return message.send(`Чат: https://t.me/joinchat/JzaGCEVg1_y7uSDbgzgtgw
-Канал с выплатами:  https://t.me/joinchat/AAAAAFen80IEazIXhplkzQ`);
+		return message.send(`Чат: @ProSomChat
+Канал с выплатами:  @ProSom`);
 	}
 
 	if(/^(?:~)\s([^]+)/i.test(message.text)) {
@@ -656,7 +656,7 @@ ${text}`);
 		if(completed) return message.send(`Пока нет новых заданий.`);
 
 		await message.user.set("menu", "sponsor");
-		return message.send(`💸 <b>За выполнение задания</b>: <i>2₄1�7</i>
+		return message.send(`💸 <b>За выполнение задания</b>: <i>2₽</i>
 🔗 <b>Ссылка на видео</b>: https://youtube.com/watch?v=Icmhg5F3_lY
 
 1️⃣ <b>Просмотрите видео полностью (1:17)</b>
@@ -821,7 +821,7 @@ ${text}`);
 
 			let text		=		``;
 			refs.slice(0, 25).map((x, i) => {
-				text		+=		`<a href="tg://user?id=${x.id}">Реферал ℄1�7${i}</a>\n`;
+				text		+=		`<a href="tg://user?id=${x.id}">Реферал №${i}</a>\n`;
 			});
 
 			message.user.set("menu", "");
@@ -928,8 +928,8 @@ ${text}`);
 					reply_markup: {
 						inline_keyboard: [
 							[{ text: "📤 Выплатить", callback_data: `withdraw${x.owner}` }],
-							[{ text: "❄1�7 Отклонить и вернуть", callback_data: `declineback${x.owner}` }],
-							[{ text: "❄1�7 Отклонить", callback_data: `decline${x.owner}` }]
+							[{ text: "❌ Отклонить и вернуть", callback_data: `declineback${x.owner}` }],
+							[{ text: "❌ Отклонить", callback_data: `decline${x.owner}` }]
 						]
 					}
 				});
@@ -940,10 +940,10 @@ ${text}`);
 			await message.user.set("menu", "selectAuditory");
 			return message.send(`Выберите аудиторию.
 
-0.25	 1�7	25%
-0.50	 1�7	50%
-0.75	 1�7	75%
-1		 1�7	100%`, {
+0.25	—	25%
+0.50	—	50%
+0.75	—	75%
+1		—	100%`, {
 				reply_markup: {
 					keyboard: [["0.25", "0.50"], ["0.75", "1"], ["⛔️ Отмена"]],
 					resize_keyboard: true
@@ -992,7 +992,7 @@ bot.on("callback_query", async (query) => {
 			await channel.save();
 
 			if(channel.completed.length >= channel.count) {
-				await bot.sendMessage(channel.owner, `✄1�7 Поздравляем! Ваш заказ на продвижение канала @${channel.username} завершён!`);
+				await bot.sendMessage(channel.owner, `✅ Поздравляем! Ваш заказ на продвижение канала @${channel.username} завершён!`);
 				await channel.remove();
 			}
 
@@ -1038,7 +1038,7 @@ bot.on("callback_query", async (query) => {
 			let user		=		await User.findOne({ id: id });
 
 			await user.inc("balance", 2);
-			bot.sendMessage(id, `✄1�7 Вы выполнили спонсорское задание и получили 2 рубля на баланс.`);
+			bot.sendMessage(id, `✅ Вы выполнили спонсорское задание и получили 2 рубля на баланс.`);
 
 			let completed	=		new Youtube({ id: id });
 			await completed.save();
@@ -1048,7 +1048,7 @@ bot.on("callback_query", async (query) => {
 
 		if(query.data.startsWith("sponsorDeny")) {
 			let id			=		Number(query.data.split("sponsorDeny")[1]);
-			bot.sendMessage(id, `❄1�7 Вы выполнили спонсорское задание неверно!`);
+			bot.sendMessage(id, `❌ Вы выполнили спонсорское задание неверно!`);
 
 			return bot.answerCallbackQuery(query.id, "Готово.");
 		}
@@ -1062,19 +1062,19 @@ bot.on("callback_query", async (query) => {
 			await wallet.toWallet({
 				account: "+" + ticket.wallet,
 				amount: ticket.amount,
-				comment: "@NewProfitBot"
+				comment: "@ProSomBot"
 			}, (err, success) => {});
 
 			bot.sendMessage(ticket.owner, "Ваша заявка на вывод была одобрена.");
-			bot.sendMessage("@newprofitpay", `🤖 <b>Была произведена новая выплата!</b>
-💰 <b>Сумма: ${Math.floor(ticket.amount)}₄1�7</b>
+			bot.sendMessage("@Prosom", `🤖 <b>Была произведена новая выплата!</b>
+💰 <b>Сумма: ${Math.floor(ticket.amount)}₽</b>
 			
-✄1�7 <b>Хочешь тоже зарабатывать?</b>
+✅ <b>Хочешь тоже зарабатывать?</b>
 ⭐️ <b>Заходи к нам! Зарабатывай на подписках, просмотрах, приглашениях.</b>`, {
 				parse_mode: "HTML",
 				reply_markup: {
 					inline_keyboard: [[
-						{ text: "💰 Перейти в бота", url: `https://t.me/NewProfitBot` }
+						{ text: "💰 Перейти в бота", url: `https://t.me/ProSomBot` }
 					]]
 				}
 			});

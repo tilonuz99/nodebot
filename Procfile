@@ -1,1 +1,1 @@
-worker: bash start.sh
+wworker: node app.js
